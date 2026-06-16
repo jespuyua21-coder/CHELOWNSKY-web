@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CHELONSKYSELL - Tu App de Ventas</title>
+    <title>CHELONSKYSELL - App Profesional de Ventas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap');
-
         * {
             margin: 0;
             padding: 0;
@@ -14,385 +13,257 @@
         }
 
         :root {
-            /* === EDITA ESTOS COLORES === */
-            --color-primary: #22c55e;        /* Verde Neon (cambia aquí) */
-            --color-primary-light: #4ade80;
-            --color-primary-dark: #16a34a;
-            --color-bg: #0a0e27;             /* Fondo oscuro */
-            --color-bg-light: #1a1f3a;
-            --color-card: #16213e;
-            --color-accent: #00d4ff;         /* Cyan (cambia aquí) */
-            --color-danger: #ff4757;         /* Rojo */
-            --color-warning: #ffa502;        /* Naranja */
-            --color-text: #ffffff;
-            --color-text-light: #b8bcc4;
-            --border-radius: 20px;
-            --shadow: 0 20px 60px rgba(0,0,0,0.3);
+            --primary: #22c55e;
+            --primary-dark: #16a34a;
+            --secondary: #0ea5e9;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --bg: #0f172a;
+            --card: #1e293b;
+            --border: #475569;
+            --text: #ffffff;
+            --text-light: #cbd5e1;
         }
 
         body {
-            font-family: 'Outfit', sans-serif;
-            background: linear-gradient(135deg, var(--color-bg) 0%, #0f1629 50%, #1a1f3a 100%);
-            color: var(--color-text);
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
+            color: var(--text);
             min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
         }
 
-        /* FONDO ANIMADO */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 20% 50%, rgba(34, 197, 94, 0.1) 0%, transparent 50%),
-                        radial-gradient(circle at 80% 80%, rgba(0, 212, 255, 0.1) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
-        }
+        .page { display: none; }
+        .page.active { display: block; }
 
-        .container {
-            position: relative;
-            z-index: 1;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        /* === HEADER PREMIUM === */
         header {
+            background: var(--card);
+            padding: 20px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 30px 40px;
-            backdrop-filter: blur(10px);
-            background: rgba(22, 33, 62, 0.5);
-            border: 1px solid rgba(34, 197, 94, 0.1);
-            border-radius: var(--border-radius);
-            margin-bottom: 40px;
-            box-shadow: var(--shadow);
+            border-bottom: 1px solid var(--border);
             position: sticky;
-            top: 20px;
-            z-index: 50;
+            top: 0;
+            z-index: 100;
         }
 
         .logo {
-            font-size: 28px;
+            font-size: 1.5rem;
             font-weight: 800;
-            letter-spacing: -1px;
-            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
 
-        .logout-btn {
-            padding: 12px 30px;
-            background: rgba(255, 71, 87, 0.2);
-            border: 1px solid var(--color-danger);
-            color: var(--color-danger);
-            border-radius: 50px;
+        .header-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .user-info {
+            text-align: right;
+            font-size: 0.9rem;
+        }
+
+        .user-name {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.3s ease;
-            font-size: 14px;
+            transition: all 0.3s;
+            font-size: 0.9rem;
         }
 
-        .logout-btn:hover {
-            background: var(--color-danger);
-            color: white;
+        .btn-primary {
+            background: var(--primary);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
             transform: translateY(-2px);
         }
 
-        /* === PANTALLA SPLASH === */
-        .splash-screen {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 90vh;
-            flex-direction: column;
-            gap: 50px;
-            text-align: center;
-            padding: 40px 20px;
+        .btn-secondary {
+            background: var(--card);
+            color: var(--text);
+            border: 1px solid var(--border);
         }
 
-        .splash-content {
-            animation: slideInDown 0.8s ease;
+        .btn-danger {
+            background: var(--danger);
+            color: white;
         }
 
-        @keyframes slideInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 30px 20px;
         }
 
-        .main-title {
-            font-size: clamp(3rem, 8vw, 5rem);
-            font-weight: 800;
-            margin-bottom: 20px;
-            line-height: 1.2;
-            letter-spacing: -2px;
-        }
-
-        .main-title span {
-            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .main-subtitle {
-            font-size: 1.3rem;
-            color: var(--color-text-light);
-            margin-bottom: 10px;
-            font-weight: 300;
-        }
-
-        /* === BOTONES SPLASH === */
-        .splash-buttons {
+        .grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            max-width: 700px;
-            animation: slideInUp 0.8s ease 0.2s both;
-        }
-
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .splash-card {
-            padding: 50px 30px;
-            background: rgba(22, 33, 62, 0.6);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(34, 197, 94, 0.2);
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            transition: all 0.4s ease;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
-        }
-
-        .splash-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .splash-card:hover::before {
-            left: 100%;
-        }
-
-        .splash-card:hover {
-            border-color: var(--color-primary);
-            background: rgba(22, 33, 62, 0.8);
-            transform: translateY(-10px);
-            box-shadow: 0 20px 60px rgba(34, 197, 94, 0.2);
-        }
-
-        .card-icon {
-            font-size: 4rem;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        .splash-card:nth-child(2) .card-icon {
-            animation-delay: 0.5s;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-
-        .card-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-        }
-
-        .card-subtitle {
-            color: var(--color-text-light);
-            font-size: 0.95rem;
-        }
-
-        /* === DASHBOARD === */
-        .dashboard-header {
-            margin-bottom: 50px;
-            animation: slideInDown 0.6s ease;
-        }
-
-        .dashboard-title {
-            font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 10px;
-            letter-spacing: -1px;
-        }
-
-        .dashboard-subtitle {
-            color: var(--color-text-light);
-            font-size: 1.1rem;
-            font-weight: 300;
-        }
-
-        /* === GRID ACCIONES === */
-        .actions-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            margin-bottom: 60px;
-        }
-
-        .action-card {
-            padding: 40px;
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.05) 0%, rgba(0, 212, 255, 0.05) 100%);
-            border: 2px solid transparent;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            transition: all 0.4s ease;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            gap: 15px;
-            backdrop-filter: blur(10px);
-        }
-
-        .action-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            z-index: -1;
-        }
-
-        .action-card:hover::before {
-            opacity: 0.1;
-        }
-
-        .action-card:hover {
-            border-color: var(--color-primary);
-            transform: translateY(-15px);
-            box-shadow: 0 30px 60px rgba(34, 197, 94, 0.2);
-        }
-
-        .action-icon {
-            font-size: 3.5rem;
-        }
-
-        .action-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-        }
-
-        .action-subtitle {
-            color: var(--color-text-light);
-            font-size: 0.9rem;
-            font-weight: 300;
-        }
-
-        /* === SECCIONES === */
-        .section {
-            margin-bottom: 60px;
-        }
-
-        .section-title {
-            font-size: 1.8rem;
-            font-weight: 700;
             margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
         }
 
-        .section-title span {
-            font-size: 1.5rem;
-        }
-
-        /* === TARJETAS DE CLIENTE === */
-        .client-card {
-            padding: 25px 30px;
-            background: rgba(22, 33, 62, 0.7);
-            border: 1px solid rgba(34, 197, 94, 0.1);
-            border-radius: 15px;
-            margin-bottom: 15px;
+        .stat-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 20px;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
         }
 
-        .client-card:hover {
-            border-color: var(--color-primary);
-            background: rgba(22, 33, 62, 0.9);
-            transform: translateX(10px);
-        }
-
-        .client-card.debt {
-            border-left: 4px solid var(--color-danger);
-        }
-
-        .client-card.highlight {
-            border-left: 4px solid var(--color-primary);
-        }
-
-        .client-info h3 {
-            font-size: 1.2rem;
-            margin-bottom: 8px;
-            font-weight: 700;
-        }
-
-        .client-phone {
-            color: var(--color-text-light);
+        .stat-content h3 {
+            color: var(--text-light);
             font-size: 0.9rem;
+            margin-bottom: 10px;
         }
 
-        .client-amount {
-            font-size: 1.6rem;
+        .stat-value {
+            font-size: 2rem;
             font-weight: 800;
-            min-width: 120px;
-            text-align: right;
+            color: var(--primary);
         }
 
-        .client-amount.danger {
-            color: var(--color-danger);
+        .stat-icon {
+            font-size: 2.5rem;
+            opacity: 0.5;
         }
 
-        .client-amount.success {
-            color: var(--color-primary);
+        .section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
         }
 
-        /* === MODAL === */
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            background: transparent;
+            color: var(--text-light);
+            border: none;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th {
+            background: var(--bg);
+            padding: 15px;
+            text-align: left;
+            font-weight: 700;
+            color: var(--primary);
+            border-bottom: 2px solid var(--border);
+        }
+
+        .table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .table tr:hover {
+            background: rgba(34, 197, 94, 0.05);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .badge-danger {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -400,9 +271,8 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-            z-index: 100;
+            background: rgba(0,0,0,0.7);
+            z-index: 200;
             align-items: center;
             justify-content: center;
             padding: 20px;
@@ -413,244 +283,298 @@
         }
 
         .modal-content {
-            background: linear-gradient(135deg, var(--color-bg-light) 0%, var(--color-card) 100%);
-            border: 1px solid rgba(34, 197, 94, 0.3);
-            border-radius: var(--border-radius);
-            padding: 40px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 30px;
             max-width: 600px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
             position: relative;
-            animation: modalIn 0.3s ease;
-        }
-
-        @keyframes modalIn {
-            from {
-                transform: scale(0.95);
-                opacity: 0;
-            }
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        .modal-title {
-            font-size: 2rem;
-            font-weight: 800;
-            margin-bottom: 30px;
         }
 
         .modal-close {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.1);
+            top: 15px;
+            right: 15px;
+            background: var(--bg);
             border: none;
-            color: white;
-            width: 45px;
-            height: 45px;
+            color: var(--text);
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 1.5rem;
-            transition: all 0.3s ease;
         }
 
-        .modal-close:hover {
-            background: var(--color-danger);
-            transform: rotate(90deg);
-        }
-
-        /* === FORMULARIOS === */
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-
-        input, textarea, select {
-            width: 100%;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(34, 197, 94, 0.2);
-            border-radius: 10px;
-            color: var(--color-text);
-            font-size: 1rem;
-            font-family: 'Outfit', sans-serif;
-            transition: all 0.3s ease;
-        }
-
-        input:focus, textarea:focus, select:focus {
-            outline: none;
-            border-color: var(--color-primary);
-            background: rgba(34, 197, 94, 0.1);
-            box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        /* === BOTONES === */
-        .btn {
-            padding: 15px 30px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            font-family: 'Outfit', sans-serif;
-        }
-
-        .btn-primary {
-            width: 100%;
-            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
-            color: #000;
-            font-size: 1.1rem;
-            padding: 18px;
-            margin-top: 10px;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(34, 197, 94, 0.4);
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--color-text);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: var(--color-primary);
-        }
-
-        /* === ESTADO DE PAGO === */
-        .payment-states {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 15px;
-            margin: 20px 0;
-        }
-
-        .state-btn {
-            padding: 15px;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            background: transparent;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            color: var(--color-text-light);
-        }
-
-        .state-btn.active {
-            border-color: var(--color-primary);
-            color: var(--color-primary);
-            background: rgba(34, 197, 94, 0.1);
-        }
-
-        /* === RESPONSIVE === */
-        @media (max-width: 768px) {
-            header {
-                padding: 20px;
-            }
-
-            .logo {
-                font-size: 22px;
-            }
-
-            .main-title {
-                font-size: 2.5rem;
-            }
-
-            .splash-buttons {
-                grid-template-columns: 1fr;
-            }
-
-            .actions-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .client-card {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .client-amount {
-                text-align: left;
-            }
-
-            .modal-content {
-                padding: 25px;
-            }
-
-            .dashboard-title {
-                font-size: 2rem;
-            }
-        }
-
-        /* === PÁGINA ESCONDIDA === */
-        .page {
-            display: none;
-        }
-
-        .page.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* === EMPTY STATE === */
-        .empty-state {
+        .splash {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 90vh;
+            flex-direction: column;
+            gap: 40px;
             text-align: center;
+        }
+
+        .splash h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .splash-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            max-width: 600px;
+        }
+
+        .splash-card {
             padding: 40px;
-            color: var(--color-text-light);
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .splash-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-10px);
+        }
+
+        .splash-icon {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+        }
+
+        .chart {
+            height: 300px;
+            background: rgba(34, 197, 94, 0.05);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            display: flex;
+            align-items: flex-end;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .bar {
+            flex: 1;
+            background: linear-gradient(180deg, var(--primary), var(--primary-dark));
+            border-radius: 8px 8px 0 0;
+            min-height: 30px;
+            position: relative;
+        }
+
+        .bar-label {
+            position: absolute;
+            bottom: -30px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .deudor-item {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid var(--danger);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .deudor-info h4 {
+            color: var(--danger);
+            margin-bottom: 5px;
+        }
+
+        .deudor-amount {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--danger);
+        }
+
+        @media (max-width: 768px) {
+            .splash-buttons { grid-template-columns: 1fr; }
+            .grid { grid-template-columns: 1fr; }
+            .table { font-size: 0.9rem; }
         }
     </style>
 </head>
 <body>
-    <!-- HEADER -->
     <header>
-        <div class="logo">CHELONSKY<br>SELL</div>
-        <button class="logout-btn" onclick="logout()">Salir 🚪</button>
+        <div class="logo">CHELONSKYSELL</div>
+        <div class="header-right">
+            <div class="user-info">
+                <div class="user-name" id="userName">Jesús</div>
+                <small id="userRole">Mi Negocio</small>
+            </div>
+            <button class="btn btn-secondary" onclick="switchRole()">Cambiar</button>
+            <button class="btn btn-secondary" onclick="logout()">Salir</button>
+        </div>
     </header>
 
-    <!-- SPLASH SCREEN -->
+    <!-- SPLASH -->
     <div id="splash" class="page active">
-        <div class="splash-screen">
-            <div class="splash-content">
-                <div class="main-title">
-                    CHELONSKY<br><span>SELL</span>
+        <div class="container">
+            <div class="splash">
+                <div>
+                    <h1>CHELONSKY<span style="color: var(--primary);">SELL</span></h1>
+                    <p style="color: var(--text-light); margin-top: 10px; font-size: 1.2rem;">Sistema Profesional de Ventas y Gestión de Créditos</p>
                 </div>
-                <div class="main-subtitle">Gestiona tus ventas y créditos</div>
+
+                <div class="splash-buttons">
+                    <div class="splash-card" onclick="goAdmin()">
+                        <div class="splash-icon">⚙️</div>
+                        <h2 style="margin-bottom: 5px;">ADMIN</h2>
+                        <p style="color: var(--text-light);">Panel de control</p>
+                    </div>
+
+                    <div class="splash-card" onclick="goBusiness()">
+                        <div class="splash-icon">📊</div>
+                        <h2 style="margin-bottom: 5px;">MI NEGOCIO</h2>
+                        <p style="color: var(--text-light);">Vender y cobrar</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN PANEL -->
+    <div id="admin" class="page">
+        <div class="container">
+            <h1 style="margin-bottom: 30px;">⚙️ Panel Administrativo</h1>
+
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('dashboard-admin', this)">📊 Dashboard</button>
+                <button class="tab-btn" onclick="switchTab('config', this)">⚙️ Configuración</button>
+                <button class="tab-btn" onclick="switchTab('tickets', this)">📋 Tickets</button>
+                <button class="tab-btn" onclick="switchTab('users', this)">👥 Usuarios</button>
             </div>
 
-            <div class="splash-buttons">
-                <div class="splash-card" onclick="goSuperAdmin()">
-                    <div class="card-icon">🔐</div>
-                    <div class="card-title">SuperAdmin</div>
-                    <div class="card-subtitle">Control total</div>
+            <!-- DASHBOARD ADMIN -->
+            <div id="tab-dashboard-admin" class="tab-content active">
+                <div class="grid">
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <h3>Total de Clientes</h3>
+                            <div class="stat-value" id="adminTotalClients">0</div>
+                        </div>
+                        <div class="stat-icon">👥</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <h3>Ventas Registradas</h3>
+                            <div class="stat-value" id="adminTotalSales">0</div>
+                        </div>
+                        <div class="stat-icon">📦</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <h3>Ingresos Totales</h3>
+                            <div class="stat-value" style="color: var(--success);" id="adminTotalIncome">$0</div>
+                        </div>
+                        <div class="stat-icon">💰</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <h3>Deuda Pendiente</h3>
+                            <div class="stat-value" style="color: var(--danger);" id="adminTotalDebt">$0</div>
+                        </div>
+                        <div class="stat-icon">⚠️</div>
+                    </div>
                 </div>
 
-                <div class="splash-card" onclick="goBusiness()">
-                    <div class="card-icon">🏪</div>
-                    <div class="card-title">Mi Negocio</div>
-                    <div class="card-subtitle">Mis ventas</div>
+                <div class="section">
+                    <h2 class="section-title">📈 Gráfico de Ventas</h2>
+                    <div class="chart" id="salesChart"></div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">🔴 Deudores (Ultimas transacciones)</h2>
+                    <div id="adminDebtorsList"></div>
+                </div>
+            </div>
+
+            <!-- CONFIG -->
+            <div id="tab-config" class="tab-content">
+                <div class="section">
+                    <h3>Configuración de Negocio</h3>
+                    <div class="form-group">
+                        <label>Nombre Negocio</label>
+                        <input type="text" id="businessName" value="CHELONSKY STORE">
+                    </div>
+                    <div class="form-group">
+                        <label>Giro</label>
+                        <select id="businessGiro">
+                            <option value="licor">🍺 Licor</option>
+                            <option value="ropa">👕 Ropa</option>
+                            <option value="tech">💻 Tecnología</option>
+                            <option value="servicios">🔧 Servicios</option>
+                            <option value="comida">🍔 Comida</option>
+                            <option value="belleza">💄 Belleza</option>
+                            <option value="boletaje">🎟️ Boletaje</option>
+                            <option value="otros">📦 Otros</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Dueño</label>
+                        <input type="text" id="businessOwner">
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono/WhatsApp</label>
+                        <input type="tel" id="businessPhone">
+                    </div>
+                    <button class="btn btn-primary" onclick="saveConfig()" style="width: 100%;">💾 Guardar Configuración</button>
+                </div>
+            </div>
+
+            <!-- TICKETS -->
+            <div id="tab-tickets" class="tab-content">
+                <div class="section">
+                    <h3>Personalizar Tickets</h3>
+                    <div class="form-group">
+                        <label>Nombre en Ticket</label>
+                        <input type="text" id="ticketName" value="CHELONSKY STORE">
+                    </div>
+                    <div class="form-group">
+                        <label>Mensaje Personalizado</label>
+                        <textarea id="ticketMessage" placeholder="Ej: ¡Gracias por tu compra!"></textarea>
+                    </div>
+                    <button class="btn btn-primary" onclick="saveTickets()" style="width: 100%;">💾 Guardar Tickets</button>
+                </div>
+            </div>
+
+            <!-- USERS -->
+            <div id="tab-users" class="tab-content">
+                <div class="section">
+                    <h3>Gestionar Usuarios</h3>
+                    <button class="btn btn-primary mb-20" onclick="openAddUser()" style="margin-bottom: 20px;">➕ Agregar Usuario</button>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Usuario</th>
+                                <th>Rol</th>
+                                <th>Email</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersList"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -659,81 +583,191 @@
     <!-- BUSINESS PAGE -->
     <div id="business" class="page">
         <div class="container">
-            <div class="dashboard-header">
-                <div class="dashboard-title">📊 Mi Negocio</div>
-                <div class="dashboard-subtitle">Control de ventas en tiempo real</div>
+            <h1 style="margin-bottom: 30px;">📊 Mi Negocio</h1>
+
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('dashboard-business', this)">📊 Dashboard</button>
+                <button class="tab-btn" onclick="switchTab('pedidos', this)">📦 Pedidos</button>
+                <button class="tab-btn" onclick="switchTab('deudores', this)">🔴 Deudores</button>
+                <button class="tab-btn" onclick="switchTab('reportes', this)">📈 Reportes</button>
+                <button class="tab-btn" onclick="switchTab('clientes', this)">👥 Clientes</button>
             </div>
 
-            <div class="actions-grid">
-                <div class="action-card" onclick="openNewOrderModal()">
-                    <div class="action-icon">📦</div>
-                    <div class="action-title">Nuevo Pedido</div>
-                    <div class="action-subtitle">Crear venta rápida</div>
+            <!-- DASHBOARD BUSINESS -->
+            <div id="tab-dashboard-business" class="tab-content active">
+                <div class="grid">
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <h3>Mis Clientes</h3>
+                            <div class="stat-value" id="myClients">0</div>
+                        </div>
+                        <div class="stat-icon">👥</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <h3>Ventas Este Mes</h3>
+                            <div class="stat-value" id="mySales">0</div>
+                        </div>
+                        <div class="stat-icon">📦</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <h3>Ganancia</h3>
+                            <div class="stat-value" style="color: var(--success);" id="myIncome">$0</div>
+                        </div>
+                        <div class="stat-icon">💵</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <h3>Por Cobrar</h3>
+                            <div class="stat-value" style="color: var(--warning);" id="myPending">$0</div>
+                        </div>
+                        <div class="stat-icon">⏳</div>
+                    </div>
                 </div>
 
-                <div class="action-card" onclick="alert('Función próximamente')">
-                    <div class="action-icon">📊</div>
-                    <div class="action-title">Estadísticas</div>
-                    <div class="action-subtitle">Ver reportes</div>
+                <div class="section">
+                    <h2 class="section-title">🎯 Acciones Rápidas</h2>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="openNewOrder()">📦 Nuevo Pedido</button>
+                        <button class="btn btn-primary" onclick="openNewClient()">➕ Nuevo Cliente</button>
+                        <button class="btn btn-secondary" onclick="switchTab('deudores', document.querySelectorAll('.tab-btn')[2])">🔴 Ver Deudores</button>
+                        <button class="btn btn-secondary" onclick="downloadReport()">📥 Descargar Reporte</button>
+                    </div>
                 </div>
 
-                <div class="action-card" onclick="logout()">
-                    <div class="action-icon">↩️</div>
-                    <div class="action-title">Volver</div>
-                    <div class="action-subtitle">Ir a inicio</div>
+                <div class="section">
+                    <h2 class="section-title">📊 Últimos Pedidos</h2>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Descripción</th>
+                                <th>Monto</th>
+                                <th>Tipo Pago</th>
+                                <th>Estado</th>
+                                <th>Fecha</th>
+                            </tr>
+                        </thead>
+                        <tbody id="latestOrders"></tbody>
+                    </table>
                 </div>
             </div>
 
-            <div class="section">
-                <div class="section-title"><span>🔴</span> Deudores</div>
-                <div id="debtorsList"></div>
+            <!-- PEDIDOS -->
+            <div id="tab-pedidos" class="tab-content">
+                <div class="section">
+                    <h2 class="section-title">📦 Gestor de Pedidos</h2>
+                    <button class="btn btn-primary mb-20" onclick="openNewOrder()" style="margin-bottom: 20px;">➕ Nuevo Pedido</button>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Descripción</th>
+                                <th>Monto</th>
+                                <th>Tipo Pago</th>
+                                <th>Estado</th>
+                                <th>Fecha</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersList"></tbody>
+                    </table>
+                </div>
             </div>
 
-            <div class="section">
-                <div class="section-title"><span>⭐</span> Mejores Clientes</div>
-                <div id="topClientsList"></div>
+            <!-- DEUDORES -->
+            <div id="tab-deudores" class="tab-content">
+                <div class="section">
+                    <h2 class="section-title">🔴 Mis Deudores</h2>
+                    <div id="myDebtors"></div>
+                </div>
+            </div>
+
+            <!-- REPORTES -->
+            <div id="tab-reportes" class="tab-content">
+                <div class="section">
+                    <h2 class="section-title">📈 Reportes Detallados</h2>
+                    
+                    <div class="form-group">
+                        <label>Filtrar por Mes</label>
+                        <input type="month" id="reportMonth" value="">
+                    </div>
+
+                    <div class="grid">
+                        <div class="stat-card">
+                            <div class="stat-content">
+                                <h3>Total Ventas Mes</h3>
+                                <div class="stat-value" id="monthSales">0</div>
+                            </div>
+                            <div class="stat-icon">📊</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-content">
+                                <h3>Total Cobrado</h3>
+                                <div class="stat-value" style="color: var(--success);" id="monthPaid">$0</div>
+                            </div>
+                            <div class="stat-icon">✅</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-content">
+                                <h3>Total Pendiente</h3>
+                                <div class="stat-value" style="color: var(--danger);" id="monthPending">$0</div>
+                            </div>
+                            <div class="stat-icon">⏳</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px;">
+                        <h3>Detalle de Transacciones</h3>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Cliente</th>
+                                    <th>Monto</th>
+                                    <th>Tipo Pago</th>
+                                    <th>Estado</th>
+                                    <th>Fecha</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reportTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CLIENTES -->
+            <div id="tab-clientes" class="tab-content">
+                <div class="section">
+                    <h2 class="section-title">👥 Mis Clientes</h2>
+                    <button class="btn btn-primary mb-20" onclick="openNewClient()" style="margin-bottom: 20px;">➕ Agregar Cliente</button>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Teléfono</th>
+                                <th>Email</th>
+                                <th>Compras</th>
+                                <th>Deuda</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clientsList"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- SUPERADMIN PAGE -->
-    <div id="superadmin" class="page">
-        <div class="container">
-            <div class="dashboard-header">
-                <div class="dashboard-title">🔐 Panel SuperAdmin</div>
-                <div class="dashboard-subtitle">Administración del sistema</div>
-            </div>
-
-            <div class="actions-grid">
-                <div class="action-card" onclick="openNewClientModal()">
-                    <div class="action-icon">➕</div>
-                    <div class="action-title">Agregar Cliente</div>
-                    <div class="action-subtitle">Nuevo negocio</div>
-                </div>
-
-                <div class="action-card" onclick="alert('Función próximamente')">
-                    <div class="action-icon">📈</div>
-                    <div class="action-title">Reportes</div>
-                    <div class="action-subtitle">Ver estadísticas</div>
-                </div>
-            </div>
-
-            <div class="section">
-                <div class="section-title"><span>👥</span> Clientes Registrados</div>
-                <div id="clientsList"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL: NUEVO PEDIDO -->
+    <!-- MODALS -->
     <div id="newOrderModal" class="modal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeModal('newOrderModal')">✕</button>
-            <div class="modal-title">📦 Nuevo Pedido</div>
+            <h2 style="margin-bottom: 20px; color: var(--primary);">📦 Nuevo Pedido</h2>
 
             <div class="form-group">
                 <label>Cliente</label>
-                <input type="text" id="orderClient" placeholder="Nombre del cliente">
+                <input type="text" id="orderClient" placeholder="Nombre cliente">
             </div>
 
             <div class="form-group">
@@ -743,87 +777,120 @@
 
             <div class="form-group">
                 <label>Monto</label>
-                <input type="number" id="orderAmount" placeholder="0.00">
+                <input type="number" id="orderAmount" step="0.01" placeholder="0.00">
+            </div>
+
+            <div class="form-group">
+                <label>Tipo de Pago</label>
+                <select id="orderPaymentType">
+                    <option value="efectivo">💵 Efectivo</option>
+                    <option value="tarjeta">💳 Tarjeta Crédito</option>
+                    <option value="transferencia">🏦 Transferencia Bancaria</option>
+                    <option value="cheque">📄 Cheque</option>
+                    <option value="criptomoneda">₿ Criptomoneda</option>
+                    <option value="otros">📌 Otros</option>
+                </select>
             </div>
 
             <div class="form-group">
                 <label>Estado</label>
-                <div class="payment-states">
-                    <button class="state-btn active" onclick="setPaymentState(this, 'paid')">✅ Pagado</button>
-                    <button class="state-btn" onclick="setPaymentState(this, 'pending')">⏳ Pendiente</button>
-                    <button class="state-btn" onclick="setPaymentState(this, 'partial')">💳 Parcial</button>
-                </div>
+                <select id="orderStatus">
+                    <option value="pagado">✅ Pagado</option>
+                    <option value="pendiente">⏳ Pendiente</option>
+                    <option value="abono">💳 Abono Parcial</option>
+                </select>
             </div>
 
-            <button class="btn btn-primary" onclick="saveOrder()">Guardar Pedido</button>
+            <button class="btn btn-primary" onclick="saveOrder()" style="width: 100%;">💾 Guardar y Enviar</button>
         </div>
     </div>
 
-    <!-- MODAL: NUEVO CLIENTE -->
     <div id="newClientModal" class="modal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeModal('newClientModal')">✕</button>
-            <div class="modal-title">➕ Nuevo Cliente</div>
+            <h2 style="margin-bottom: 20px; color: var(--primary);">➕ Nuevo Cliente</h2>
 
             <div class="form-group">
-                <label>Nombre del Negocio</label>
-                <input type="text" id="clientName" placeholder="Mi Tienda">
+                <label>Nombre</label>
+                <input type="text" id="clientName">
             </div>
 
             <div class="form-group">
-                <label>Dueño</label>
-                <input type="text" id="clientOwner" placeholder="Nombre">
+                <label>Teléfono/WhatsApp</label>
+                <input type="tel" id="clientPhone">
             </div>
 
             <div class="form-group">
-                <label>Teléfono</label>
-                <input type="tel" id="clientPhone" placeholder="+52 1234567890">
+                <label>Email</label>
+                <input type="email" id="clientEmail">
             </div>
 
-            <button class="btn btn-primary" onclick="saveClient()">Crear Cliente</button>
+            <div class="form-group">
+                <label>Dirección</label>
+                <input type="text" id="clientAddress">
+            </div>
+
+            <button class="btn btn-primary" onclick="saveClient()" style="width: 100%;">💾 Guardar Cliente</button>
         </div>
     </div>
 
     <script>
-        // === DATOS ===
-        let currentPaymentState = 'paid';
+        // DATOS
         let orders = JSON.parse(localStorage.getItem('orders')) || [];
         let clients = JSON.parse(localStorage.getItem('clients')) || [];
+        let config = JSON.parse(localStorage.getItem('config')) || {
+            business: 'CHELONSKY STORE',
+            owner: 'Jesús',
+            giro: 'licor'
+        };
+
         const PASSWORD = 'CHELONSKY2024';
 
-        // === NAVEGACIÓN ===
-        function showPage(id) {
+        function switchPage(page) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            window.scrollTo(0, 0);
+            document.getElementById(page).classList.add('active');
         }
 
-        function goSuperAdmin() {
-            const pass = prompt('🔐 Contraseña SuperAdmin:');
+        function switchTab(tab, btn) {
+            const currentPage = document.querySelector('.page.active').id;
+            document.querySelectorAll(`#${currentPage} .tab-content`).forEach(t => t.classList.remove('active'));
+            document.querySelectorAll(`#${currentPage} .tab-btn`).forEach(b => b.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+            if (btn) btn.classList.add('active');
+        }
+
+        function goAdmin() {
+            const pass = prompt('🔐 Contraseña Admin:');
             if (pass === PASSWORD) {
-                loadClients();
-                showPage('superadmin');
+                document.getElementById('userName').textContent = 'Admin';
+                document.getElementById('userRole').textContent = 'Panel Administrativo';
+                loadAdminDashboard();
+                switchPage('admin');
             } else {
                 alert('❌ Contraseña incorrecta');
             }
         }
 
         function goBusiness() {
-            loadDashboard();
-            showPage('business');
+            document.getElementById('userName').textContent = config.owner || 'Usuario';
+            document.getElementById('userRole').textContent = 'Mi Negocio';
+            loadBusinessDashboard();
+            switchPage('business');
+        }
+
+        function switchRole() {
+            goAdmin();
         }
 
         function logout() {
-            showPage('splash');
+            switchPage('splash');
         }
 
-        // === MODALES ===
-        function openNewOrderModal() {
+        function openNewOrder() {
             document.getElementById('newOrderModal').classList.add('active');
-            currentPaymentState = 'paid';
         }
 
-        function openNewClientModal() {
+        function openNewClient() {
             document.getElementById('newClientModal').classList.add('active');
         }
 
@@ -831,101 +898,232 @@
             document.getElementById(id).classList.remove('active');
         }
 
-        // === FUNCIONES ===
-        function setPaymentState(btn, state) {
-            document.querySelectorAll('.state-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentPaymentState = state;
-        }
-
         function saveOrder() {
             const client = document.getElementById('orderClient').value;
             const desc = document.getElementById('orderDesc').value;
             const amount = document.getElementById('orderAmount').value;
+            const paymentType = document.getElementById('orderPaymentType').value;
+            const status = document.getElementById('orderStatus').value;
 
             if (!client || !desc || !amount) {
-                alert('Completa todos los campos');
+                alert('❌ Completa todos los campos');
                 return;
             }
 
-            orders.push({
+            const order = {
                 id: Date.now(),
                 client,
                 desc,
                 amount: parseFloat(amount),
-                state: currentPaymentState,
+                paymentType,
+                status,
                 date: new Date().toLocaleDateString('es-MX')
-            });
+            };
 
+            orders.push(order);
             localStorage.setItem('orders', JSON.stringify(orders));
+
+            const message = `${config.business}\n\n📦 PEDIDO\n👤 ${client}\n📝 ${desc}\n💰 $${amount}\n💳 ${paymentType}\n${status}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(message)}`);
+
             closeModal('newOrderModal');
-            loadDashboard();
-            alert('✅ Pedido guardado!');
+            document.getElementById('newOrderModal').querySelectorAll('input, textarea, select').forEach(el => el.value = '');
+            loadBusinessDashboard();
         }
 
         function saveClient() {
             const name = document.getElementById('clientName').value;
-            const owner = document.getElementById('clientOwner').value;
             const phone = document.getElementById('clientPhone').value;
+            const email = document.getElementById('clientEmail').value;
+            const address = document.getElementById('clientAddress').value;
 
-            if (!name || !owner) {
-                alert('Completa todos los campos');
+            if (!name) {
+                alert('❌ El nombre es obligatorio');
                 return;
             }
 
             clients.push({
                 id: Date.now(),
                 name,
-                owner,
-                phone
+                phone,
+                email,
+                address,
+                purchases: 0,
+                debt: 0
             });
 
             localStorage.setItem('clients', JSON.stringify(clients));
             closeModal('newClientModal');
-            loadClients();
-            alert('✅ Cliente agregado!');
+            document.getElementById('newClientModal').querySelectorAll('input').forEach(el => el.value = '');
+            loadBusinessDashboard();
         }
 
-        function loadDashboard() {
+        function saveConfig() {
+            config.business = document.getElementById('businessName').value;
+            config.owner = document.getElementById('businessOwner').value;
+            config.giro = document.getElementById('businessGiro').value;
+            config.phone = document.getElementById('businessPhone').value;
+            localStorage.setItem('config', JSON.stringify(config));
+            alert('✅ Configuración guardada');
+        }
+
+        function loadAdminDashboard() {
+            document.getElementById('adminTotalClients').textContent = clients.length;
+            document.getElementById('adminTotalSales').textContent = orders.length;
+            
+            const totalIncome = orders.filter(o => o.status === 'pagado').reduce((sum, o) => sum + o.amount, 0);
+            const totalDebt = orders.filter(o => o.status !== 'pagado').reduce((sum, o) => sum + o.amount, 0);
+            
+            document.getElementById('adminTotalIncome').textContent = '$' + totalIncome.toFixed(2);
+            document.getElementById('adminTotalDebt').textContent = '$' + totalDebt.toFixed(2);
+
+            // Gráfico simple
+            const chart = document.getElementById('salesChart');
+            chart.innerHTML = '';
+            const grouped = {};
+            orders.forEach(o => {
+                const month = o.date.split('/')[1] || 'General';
+                grouped[month] = (grouped[month] || 0) + o.amount;
+            });
+
+            Object.entries(grouped).forEach(([month, amount]) => {
+                const maxAmount = Math.max(...Object.values(grouped));
+                const height = (amount / maxAmount) * 100 + '%';
+                const bar = document.createElement('div');
+                bar.className = 'bar';
+                bar.style.height = height;
+                bar.innerHTML = `<div class="bar-label">${month}</div>`;
+                chart.appendChild(bar);
+            });
+
             // Deudores
-            const debtors = orders.filter(o => o.state !== 'paid');
-            const debtorsHtml = debtors.length ? debtors.map(o => `
-                <div class="client-card debt">
-                    <div class="client-info">
-                        <h3>${o.client}</h3>
-                        <div class="client-phone">${o.desc}</div>
+            const debtors = orders.filter(o => o.status !== 'pagado');
+            let debtorsHtml = '';
+            debtors.forEach(d => {
+                debtorsHtml += `
+                    <div class="deudor-item">
+                        <div class="deudor-info">
+                            <h4>${d.client}</h4>
+                            <small>${d.desc}</small>
+                        </div>
+                        <div class="deudor-amount">$${d.amount.toFixed(2)}</div>
                     </div>
-                    <div class="client-amount danger">$${o.amount}</div>
-                </div>
-            `).join('') : '<div class="empty-state">✨ ¡Sin deudas!</div>';
-
-            document.getElementById('debtorsList').innerHTML = debtorsHtml;
-
-            // Top clientes
-            const topHtml = orders.slice(0, 3).map(o => `
-                <div class="client-card highlight">
-                    <div class="client-info">
-                        <h3>${o.client}</h3>
-                        <div class="client-phone">${o.date}</div>
-                    </div>
-                    <div class="client-amount success">$${o.amount}</div>
-                </div>
-            `).join('') || '<div class="empty-state">📦 Crea tu primer pedido</div>';
-
-            document.getElementById('topClientsList').innerHTML = topHtml;
+                `;
+            });
+            document.getElementById('adminDebtorsList').innerHTML = debtorsHtml || '<p style="color: var(--text-light);">No hay deudores 🎉</p>';
         }
 
-        function loadClients() {
-            const html = clients.map(c => `
-                <div class="client-card highlight">
-                    <div class="client-info">
-                        <h3>${c.name}</h3>
-                        <div class="client-phone">${c.owner} • ${c.phone}</div>
-                    </div>
-                </div>
-            `).join('') || '<div class="empty-state">👤 Sin clientes aún</div>';
+        function loadBusinessDashboard() {
+            document.getElementById('myClients').textContent = clients.length;
+            document.getElementById('mySales').textContent = orders.length;
 
-            document.getElementById('clientsList').innerHTML = html;
+            const myIncome = orders.filter(o => o.status === 'pagado').reduce((sum, o) => sum + o.amount, 0);
+            const myPending = orders.filter(o => o.status !== 'pagado').reduce((sum, o) => sum + o.amount, 0);
+
+            document.getElementById('myIncome').textContent = '$' + myIncome.toFixed(2);
+            document.getElementById('myPending').textContent = '$' + myPending.toFixed(2);
+
+            // Últimos pedidos
+            let ordersHtml = '';
+            orders.slice(-5).reverse().forEach(o => {
+                const statusBadge = o.status === 'pagado' ? 'badge-success' : o.status === 'pendiente' ? 'badge-danger' : 'badge-warning';
+                const statusText = o.status === 'pagado' ? '✅ Pagado' : o.status === 'pendiente' ? '⏳ Pendiente' : '💳 Abono';
+                ordersHtml += `
+                    <tr>
+                        <td>${o.client}</td>
+                        <td>${o.desc}</td>
+                        <td>$${o.amount.toFixed(2)}</td>
+                        <td>${o.paymentType}</td>
+                        <td><span class="badge ${statusBadge}">${statusText}</span></td>
+                        <td>${o.date}</td>
+                    </tr>
+                `;
+            });
+            document.getElementById('latestOrders').innerHTML = ordersHtml || '<tr><td colspan="6" style="text-align: center;">Sin pedidos aún</td></tr>';
+
+            // Todos los pedidos
+            let allOrdersHtml = '';
+            orders.forEach(o => {
+                const statusBadge = o.status === 'pagado' ? 'badge-success' : o.status === 'pendiente' ? 'badge-danger' : 'badge-warning';
+                const statusText = o.status === 'pagado' ? '✅ Pagado' : o.status === 'pendiente' ? '⏳ Pendiente' : '💳 Abono';
+                allOrdersHtml += `
+                    <tr>
+                        <td>${o.client}</td>
+                        <td>${o.desc}</td>
+                        <td>$${o.amount.toFixed(2)}</td>
+                        <td>${o.paymentType}</td>
+                        <td><span class="badge ${statusBadge}">${statusText}</span></td>
+                        <td>${o.date}</td>
+                        <td>
+                            <button class="btn btn-secondary" onclick="updateOrder(${o.id})" style="padding: 5px 10px; font-size: 0.8rem;">Editar</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            document.getElementById('ordersList').innerHTML = allOrdersHtml || '<tr><td colspan="7" style="text-align: center;">Sin pedidos aún</td></tr>';
+
+            // Deudores
+            const debtors = orders.filter(o => o.status !== 'pagado');
+            let debtorsHtml = '';
+            debtors.forEach(d => {
+                debtorsHtml += `
+                    <div class="deudor-item">
+                        <div class="deudor-info">
+                            <h4>${d.client}</h4>
+                            <small>${d.desc} • ${d.paymentType}</small>
+                        </div>
+                        <div>
+                            <div class="deudor-amount">$${d.amount.toFixed(2)}</div>
+                            <small style="color: var(--text-light);">${d.date}</small>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('myDebtors').innerHTML = debtorsHtml || '<p style="color: var(--text-light); text-align: center;">✅ ¡Sin deudores!</p>';
+
+            // Clientes
+            let clientsHtml = '';
+            clients.forEach(c => {
+                clientsHtml += `
+                    <tr>
+                        <td>${c.name}</td>
+                        <td>${c.phone}</td>
+                        <td>${c.email}</td>
+                        <td>${c.purchases || 0}</td>
+                        <td style="color: var(--danger);">$${(c.debt || 0).toFixed(2)}</td>
+                        <td>
+                            <button class="btn btn-secondary" onclick="deleteClient(${c.id})" style="padding: 5px 10px; font-size: 0.8rem;">Eliminar</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            document.getElementById('clientsList').innerHTML = clientsHtml || '<tr><td colspan="6" style="text-align: center;">Sin clientes aún</td></tr>';
+        }
+
+        function downloadReport() {
+            const text = `REPORTE - ${config.business}\n\nTotal Órdenes: ${orders.length}\nTotal Ingresos: $${orders.filter(o => o.status === 'pagado').reduce((s, o) => s + o.amount, 0).toFixed(2)}\nDeuda Pendiente: $${orders.filter(o => o.status !== 'pagado').reduce((s, o) => s + o.amount, 0).toFixed(2)}\n\nOrdenes:\n${orders.map(o => `${o.client} - $${o.amount} - ${o.status}`).join('\n')}`;
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'reporte.txt';
+            a.click();
+        }
+
+        function deleteClient(id) {
+            if (confirm('¿Eliminar cliente?')) {
+                clients = clients.filter(c => c.id !== id);
+                localStorage.setItem('clients', JSON.stringify(clients));
+                loadBusinessDashboard();
+            }
+        }
+
+        function updateOrder(id) {
+            alert('Función de edición próximamente');
+        }
+
+        function openAddUser() {
+            alert('Función de usuarios próximamente');
         }
     </script>
 </body>
