@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHELONSKYSELL - Tu App de Ventas</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* === EDITA ESTOS COLORES === */
+            --color-primary: #22c55e;        /* Verde Neon (cambia aquí) */
+            --color-primary-light: #4ade80;
+            --color-primary-dark: #16a34a;
+            --color-bg: #0a0e27;             /* Fondo oscuro */
+            --color-bg-light: #1a1f3a;
+            --color-card: #16213e;
+            --color-accent: #00d4ff;         /* Cyan (cambia aquí) */
+            --color-danger: #ff4757;         /* Rojo */
+            --color-warning: #ffa502;        /* Naranja */
+            --color-text: #ffffff;
+            --color-text-light: #b8bcc4;
+            --border-radius: 20px;
+            --shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, var(--color-bg) 0%, #0f1629 50%, #1a1f3a 100%);
+            color: var(--color-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* FONDO ANIMADO */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(34, 197, 94, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(0, 212, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* === HEADER PREMIUM === */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 40px;
+            backdrop-filter: blur(10px);
+            background: rgba(22, 33, 62, 0.5);
+            border: 1px solid rgba(34, 197, 94, 0.1);
+            border-radius: var(--border-radius);
+            margin-bottom: 40px;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 20px;
+            z-index: 50;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logout-btn {
+            padding: 12px 30px;
+            background: rgba(255, 71, 87, 0.2);
+            border: 1px solid var(--color-danger);
+            color: var(--color-danger);
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .logout-btn:hover {
+            background: var(--color-danger);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* === PANTALLA SPLASH === */
+        .splash-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 90vh;
+            flex-direction: column;
+            gap: 50px;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .splash-content {
+            animation: slideInDown 0.8s ease;
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .main-title {
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 800;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            letter-spacing: -2px;
+        }
+
+        .main-title span {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .main-subtitle {
+            font-size: 1.3rem;
+            color: var(--color-text-light);
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        /* === BOTONES SPLASH === */
+        .splash-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            max-width: 700px;
+            animation: slideInUp 0.8s ease 0.2s both;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .splash-card {
+            padding: 50px 30px;
+            background: rgba(22, 33, 62, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .splash-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .splash-card:hover::before {
+            left: 100%;
+        }
+
+        .splash-card:hover {
+            border-color: var(--color-primary);
+            background: rgba(22, 33, 62, 0.8);
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(34, 197, 94, 0.2);
+        }
+
+        .card-icon {
+            font-size: 4rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .splash-card:nth-child(2) .card-icon {
+            animation-delay: 0.5s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .card-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .card-subtitle {
+            color: var(--color-text-light);
+            font-size: 0.95rem;
+        }
+
+        /* === DASHBOARD === */
+        .dashboard-header {
+            margin-bottom: 50px;
+            animation: slideInDown 0.6s ease;
+        }
+
+        .dashboard-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+
+        .dashboard-subtitle {
+            color: var(--color-text-light);
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        /* === GRID ACCIONES === */
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 60px;
+        }
+
+        .action-card {
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.05) 0%, rgba(0, 212, 255, 0.05) 100%);
+            border: 2px solid transparent;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: -1;
+        }
+
+        .action-card:hover::before {
+            opacity: 0.1;
+        }
+
+        .action-card:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-15px);
+            box-shadow: 0 30px 60px rgba(34, 197, 94, 0.2);
+        }
+
+        .action-icon {
+            font-size: 3.5rem;
+        }
+
+        .action-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .action-subtitle {
+            color: var(--color-text-light);
+            font-size: 0.9rem;
+            font-weight: 300;
+        }
+
+        /* === SECCIONES === */
+        .section {
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title span {
+            font-size: 1.5rem;
+        }
+
+        /* === TARJETAS DE CLIENTE === */
+        .client-card {
+            padding: 25px 30px;
+            background: rgba(22, 33, 62, 0.7);
+            border: 1px solid rgba(34, 197, 94, 0.1);
+            border-radius: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .client-card:hover {
+            border-color: var(--color-primary);
+            background: rgba(22, 33, 62, 0.9);
+            transform: translateX(10px);
+        }
+
+        .client-card.debt {
+            border-left: 4px solid var(--color-danger);
+        }
+
+        .client-card.highlight {
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .client-info h3 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .client-phone {
+            color: var(--color-text-light);
+            font-size: 0.9rem;
+        }
+
+        .client-amount {
+            font-size: 1.6rem;
+            font-weight: 800;
+            min-width: 120px;
+            text-align: right;
+        }
+
+        .client-amount.danger {
+            color: var(--color-danger);
+        }
+
+        .client-amount.success {
+            color: var(--color-primary);
+        }
+
+        /* === MODAL === */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, var(--color-bg-light) 0%, var(--color-card) 100%);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from {
+                transform: scale(0.95);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 30px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--color-danger);
+            transform: rotate(90deg);
+        }
+
+        /* === FORMULARIOS === */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            border-radius: 10px;
+            color: var(--color-text);
+            font-size: 1rem;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            background: rgba(34, 197, 94, 0.1);
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* === BOTONES === */
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+            color: #000;
+            font-size: 1.1rem;
+            padding: 18px;
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(34, 197, 94, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--color-text);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: var(--color-primary);
+        }
+
+        /* === ESTADO DE PAGO === */
+        .payment-states {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .state-btn {
+            padding: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: var(--color-text-light);
+        }
+
+        .state-btn.active {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+            background: rgba(34, 197, 94, 0.1);
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 768px) {
+            header {
+                padding: 20px;
+            }
+
+            .logo {
+                font-size: 22px;
+            }
+
+            .main-title {
+                font-size: 2.5rem;
+            }
+
+            .splash-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .client-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .client-amount {
+                text-align: left;
+            }
+
+            .modal-content {
+                padding: 25px;
+            }
+
+            .dashboard-title {
+                font-size: 2rem;
+            }
+        }
+
+        /* === PÁGINA ESCONDIDA === */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* === EMPTY STATE === */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--color-text-light);
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="logo">CHELONSKY<br>SELL</div>
+        <button class="logout-btn" onclick="logout()">Salir 🚪</button>
+    </header>
+
+    <!-- SPLASH SCREEN -->
+    <div id="splash" class="page active">
+        <div class="splash-screen">
+            <div class="splash-content">
+                <div class="main-title">
+                    CHELONSKY<br><span>SELL</span>
+                </div>
+                <div class="main-subtitle">Gestiona tus ventas y créditos</div>
+            </div>
+
+            <div class="splash-buttons">
+                <div class="splash-card" onclick="goSuperAdmin()">
+                    <div class="card-icon">🔐</div>
+                    <div class="card-title">SuperAdmin</div>
+                    <div class="card-subtitle">Control total</div>
+                </div>
+
+                <div class="splash-card" onclick="goBusiness()">
+                    <div class="card-icon">🏪</div>
+                    <div class="card-title">Mi Negocio</div>
+                    <div class="card-subtitle">Mis ventas</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BUSINESS PAGE -->
+    <div id="business" class="page">
+        <div class="container">
+            <div class="dashboard-header">
+                <div class="dashboard-title">📊 Mi Negocio</div>
+                <div class="dashboard-subtitle">Control de ventas en tiempo real</div>
+            </div>
+
+            <div class="actions-grid">
+                <div class="action-card" onclick="openNewOrderModal()">
+                    <div class="action-icon">📦</div>
+                    <div class="action-title">Nuevo Pedido</div>
+                    <div class="action-subtitle">Crear venta rápida</div>
+                </div>
+
+                <div class="action-card" onclick="alert('Función próximamente')">
+                    <div class="action-icon">📊</div>
+                    <div class="action-title">Estadísticas</div>
+                    <div class="action-subtitle">Ver reportes</div>
+                </div>
+
+                <div class="action-card" onclick="logout()">
+                    <div class="action-icon">↩️</div>
+                    <div class="action-title">Volver</div>
+                    <div class="action-subtitle">Ir a inicio</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title"><span>🔴</span> Deudores</div>
+                <div id="debtorsList"></div>
+            </div>
+
+            <div class="section">
+                <div class="section-title"><span>⭐</span> Mejores Clientes</div>
+                <div id="topClientsList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUPERADMIN PAGE -->
+    <div id="superadmin" class="page">
+        <div class="container">
+            <div class="dashboard-header">
+                <div class="dashboard-title">🔐 Panel SuperAdmin</div>
+                <div class="dashboard-subtitle">Administración del sistema</div>
+            </div>
+
+            <div class="actions-grid">
+                <div class="action-card" onclick="openNewClientModal()">
+                    <div class="action-icon">➕</div>
+                    <div class="action-title">Agregar Cliente</div>
+                    <div class="action-subtitle">Nuevo negocio</div>
+                </div>
+
+                <div class="action-card" onclick="alert('Función próximamente')">
+                    <div class="action-icon">📈</div>
+                    <div class="action-title">Reportes</div>
+                    <div class="action-subtitle">Ver estadísticas</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title"><span>👥</span> Clientes Registrados</div>
+                <div id="clientsList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: NUEVO PEDIDO -->
+    <div id="newOrderModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('newOrderModal')">✕</button>
+            <div class="modal-title">📦 Nuevo Pedido</div>
+
+            <div class="form-group">
+                <label>Cliente</label>
+                <input type="text" id="orderClient" placeholder="Nombre del cliente">
+            </div>
+
+            <div class="form-group">
+                <label>Descripción</label>
+                <textarea id="orderDesc" placeholder="Qué se vendió..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Monto</label>
+                <input type="number" id="orderAmount" placeholder="0.00">
+            </div>
+
+            <div class="form-group">
+                <label>Estado</label>
+                <div class="payment-states">
+                    <button class="state-btn active" onclick="setPaymentState(this, 'paid')">✅ Pagado</button>
+                    <button class="state-btn" onclick="setPaymentState(this, 'pending')">⏳ Pendiente</button>
+                    <button class="state-btn" onclick="setPaymentState(this, 'partial')">💳 Parcial</button>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="saveOrder()">Guardar Pedido</button>
+        </div>
+    </div>
+
+    <!-- MODAL: NUEVO CLIENTE -->
+    <div id="newClientModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('newClientModal')">✕</button>
+            <div class="modal-title">➕ Nuevo Cliente</div>
+
+            <div class="form-group">
+                <label>Nombre del Negocio</label>
+                <input type="text" id="clientName" placeholder="Mi Tienda">
+            </div>
+
+            <div class="form-group">
+                <label>Dueño</label>
+                <input type="text" id="clientOwner" placeholder="Nombre">
+            </div>
+
+            <div class="form-group">
+                <label>Teléfono</label>
+                <input type="tel" id="clientPhone" placeholder="+52 1234567890">
+            </div>
+
+            <button class="btn btn-primary" onclick="saveClient()">Crear Cliente</button>
+        </div>
+    </div>
+
+    <script>
+        // === DATOS ===
+        let currentPaymentState = 'paid';
+        let orders = JSON.parse(localStorage.getItem('orders')) || [];
+        let clients = JSON.parse(localStorage.getItem('clients')) || [];
+        const PASSWORD = 'CHELONSKY2024';
+
+        // === NAVEGACIÓN ===
+        function showPage(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function goSuperAdmin() {
+            const pass = prompt('🔐 Contraseña SuperAdmin:');
+            if (pass === PASSWORD) {
+                loadClients();
+                showPage('superadmin');
+            } else {
+                alert('❌ Contraseña incorrecta');
+            }
+        }
+
+        function goBusiness() {
+            loadDashboard();
+            showPage('business');
+        }
+
+        function logout() {
+            showPage('splash');
+        }
+
+        // === MODALES ===
+        function openNewOrderModal() {
+            document.getElementById('newOrderModal').classList.add('active');
+            currentPaymentState = 'paid';
+        }
+
+        function openNewClientModal() {
+            document.getElementById('newClientModal').classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        // === FUNCIONES ===
+        function setPaymentState(btn, state) {
+            document.querySelectorAll('.state-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentPaymentState = state;
+        }
+
+        function saveOrder() {
+            const client = document.getElementById('orderClient').value;
+            const desc = document.getElementById('orderDesc').value;
+            const amount = document.getElementById('orderAmount').value;
+
+            if (!client || !desc || !amount) {
+                alert('Completa todos los campos');
+                return;
+            }
+
+            orders.push({
+                id: Date.now(),
+                client,
+                desc,
+                amount: parseFloat(amount),
+                state: currentPaymentState,
+                date: new Date().toLocaleDateString('es-MX')
+            });
+
+            localStorage.setItem('orders', JSON.stringify(orders));
+            closeModal('newOrderModal');
+            loadDashboard();
+            alert('✅ Pedido guardado!');
+        }
+
+        function saveClient() {
+            const name = document.getElementById('clientName').value;
+            const owner = document.getElementById('clientOwner').value;
+            const phone = document.getElementById('clientPhone').value;
+
+            if (!name || !owner) {
+                alert('Completa todos los campos');
+                return;
+            }
+
+            clients.push({
+                id: Date.now(),
+                name,
+                owner,
+                phone
+            });
+
+            localStorage.setItem('clients', JSON.stringify(clients));
+            closeModal('newClientModal');
+            loadClients();
+            alert('✅ Cliente agregado!');
+        }
+
+        function loadDashboard() {
+            // Deudores
+            const debtors = orders.filter(o => o.state !== 'paid');
+            const debtorsHtml = debtors.length ? debtors.map(o => `
+                <div class="client-card debt">
+                    <div class="client-info">
+                        <h3>${o.client}</h3>
+                        <div class="client-phone">${o.desc}</div>
+                    </div>
+                    <div class="client-amount danger">$${o.amount}</div>
+                </div>
+            `).join('') : '<div class="empty-state">✨ ¡Sin deudas!</div>';
+
+            document.getElementById('debtorsList').innerHTML = debtorsHtml;
+
+            // Top clientes
+            const topHtml = orders.slice(0, 3).map(o => `
+                <div class="client-card highlight">
+                    <div class="client-info">
+                        <h3>${o.client}</h3>
+                        <div class="client-phone">${o.date}</div>
+                    </div>
+                    <div class="client-amount success">$${o.amount}</div>
+                </div>
+            `).join('') || '<div class="empty-state">📦 Crea tu primer pedido</div>';
+
+            document.getElementById('topClientsList').innerHTML = topHtml;
+        }
+
+        function loadClients() {
+            const html = clients.map(c => `
+                <div class="client-card highlight">
+                    <div class="client-info">
+                        <h3>${c.name}</h3>
+                        <div class="client-phone">${c.owner} • ${c.phone}</div>
+                    </div>
+                </div>
+            `).join('') || '<div class="empty-state">👤 Sin clientes aún</div>';
+
+            document.getElementById('clientsList').innerHTML = html;
+        }
+    </script>
+</body>
+</html>
