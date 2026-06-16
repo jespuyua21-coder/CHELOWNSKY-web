@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHELONSKY - Control Total de Tiendas</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/recharts@2.5.0/dist/recharts.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body {
+            background: linear-gradient(to bottom right, #111827, #1f2937, #111827);
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .neon-green { color: #10b981; }
+        .border-neon { border-color: #10b981; }
+        .bg-neon { background-color: #10b981; }
+        .hover-neon:hover { background-color: #059669; }
+        .gradient-neon { 
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const ChelonskyApp = () => {
+            const [user, setUser] = useState(null);
+            const [stores, setStores] = useState([]);
+            const [currentView, setCurrentView] = useState('login');
+            const [formData, setFormData] = useState({});
+            const [selectedStore, setSelectedStore] = useState(null);
+
+            // Cargar datos
+            useEffect(() => {
+                const savedStores = localStorage.getItem('chelonsky_stores');
+                const savedUser = localStorage.getItem('chelonsky_user');
+                
+                if (savedStores) setStores(JSON.parse(savedStores));
+                if (savedUser) {
+                    setUser(JSON.parse(savedUser));
+                    setCurrentView('admin');
+                }
+            }, []);
+
+            // Guardar stores
+            useEffect(() => {
+                if (stores.length > 0) {
+                    localStorage.setItem('chelonsky_stores', JSON.stringify(stores));
+                }
+            }, [stores]);
+
+            // LOGIN
+            const handleLogin = () => {
+                const { email, password } = formData;
+                if (email === 'admin@chelonsky.com' && password === 'JETSO2024') {
+                    const adminUser = { name: 'Jesus JETSO', role: 'admin', email };
+                    setUser(adminUser);
+                    localStorage.setItem('chelonsky_user', JSON.stringify(adminUser));
+                    setCurrentView('admin');
+                    setFormData({});
+                } else {
+                    alert('❌ Credenciales inválidas\n\nEmail: admin@chelonsky.com\nContraseña: JETSO2024');
+                }
+            };
+
+            // CREAR TIENDA
+            const handleCreateStore = () => {
+                const { storeName, userName, email } = formData;
+                if (!storeName || !userName || !email) {
+                    alert('❌ Completa todos los campos');
+                    return;
+                }
+
+                const licenseCode = `CHE-${Date.now().toString(36).toUpperCase()}`;
+                const newStore = {
+                    id: Date.now(),
+                    name: storeName,
+                    owner: userName,
+                    email,
+                    licenseCode,
+                    licenseActive: true,
+                    licenseExpiry: new Date(Date.now() + 30*24*60*60*1000).toLocaleDateString('es-MX'),
+                    createdDate: new Date().toLocaleDateString('es-MX'),
+                    sales: [],
+                    clients: [],
+                    weekSales: []
+                };
+
+                setStores([...stores, newStore]);
+                alert(`✅ Tienda creada!\n\nCódigo Licencia: ${licenseCode}`);
+                setFormData({});
+            };
+
+            // AGREGAR VENTA
+            const handleAddSale = (storeId) => {
+                const { clientName, amount, paymentMethod } = formData;
+                if (!clientName || !amount) {
+                    alert('❌ Ingresa cliente y monto');
+                    return;
+                }
+
+                setStores(stores.map(store => 
+                    store.id === storeId 
+                        ? {
+                            ...store,
+                            sales: [...(store.sales || []), {
+                                id: Date.now(),
+                                client: clientName,
+                                amount: parseFloat(amount),
+                                method: paymentMethod || 'Efectivo',
+                                date: new Date().toLocaleDateString('es-MX'),
+                                time: new Date().toLocaleTimeString('es-MX')
+                            }]
+                        }
+                        : store
+                ));
+                setFormData({});
+                alert('✅ Venta registrada');
+            };
+
+            // EXPORTAR EXCEL
+            const exportToExcel = (store) => {
+                const data = {
+                    'Clientes': store.clients || [],
+                    'Ventas Diarias': store.sales || [],
+                    'Ventas Semanales': store.weekSales || []
+                };
+
+                const ws = XLSX.utils.aoa_to_sheet([[
+                    'TIENDA: ' + store.name,
+                    'Código Licencia: ' + store.licenseCode,
+                    'Fecha: ' + new Date().toLocaleDateString('es-MX')
+                ]]);
+
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, 'Resumen');
+
+                // Hoja de Clientes
+                if (store.clients.length > 0) {
+                    const clientsWs = XLSX.utils.json_to_sheet(store.clients);
+                    XLSX.utils.book_append_sheet(wb, clientsWs, 'Clientes');
+                }
+
+                // Hoja de Ventas Diarias
+                if (store.sales.length > 0) {
+                    const salesWs = XLSX.utils.json_to_sheet(store.sales);
+                    XLSX.utils.book_append_sheet(wb, salesWs, 'Ventas Diarias');
+                }
+
+                XLSX.writeFile(wb, `${store.name}-${new Date().getTime()}.xlsx`);
+            };
+
+            // LOGOUT
+            const handleLogout = () => {
+                setUser(null);
+                localStorage.removeItem('chelonsky_user');
+                setCurrentView('login');
+                setFormData({});
+            };
+
+            // PANTALLA LOGIN
+            if (!user) {
+                return (
+                    <div className="min-h-screen flex items-center justify-center p-4">
+                        <div className="w-full max-w-md bg-gray-800 border-2 border-neon rounded-lg p-8 shadow-2xl">
+                            <div className="text-center mb-8">
+                                <h1 className="text-5xl font-black neon-green mb-2">CHELONSKY</h1>
+                                <h2 className="text-2xl font-bold text-gray-300">Control Total</h2>
+                                <p className="text-gray-500 text-sm mt-2">Panel Administrativo v1.0</p>
+                            </div>
+
+                            <div className="space-y-4 mb-6">
+                                <input
+                                    type="email"
+                                    placeholder="📧 Email"
+                                    value={formData.email || ''}
+                                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                                    onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
+                                    className="w-full bg-gray-700 text-white px-4 py-3 rounded border border-gray-600 focus:border-neon focus:outline-none"
+                                />
+                                <input
+                                    type="password"
+                                    placeholder="🔐 Contraseña"
+                                    value={formData.password || ''}
+                                    onChange={(e) => setFormData({...formData, password: e.target.value})}
+                                    onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
+                                    className="w-full bg-gray-700 text-white px-4 py-3 rounded border border-gray-600 focus:border-neon focus:outline-none"
+                                />
+                                <button
+                                    onClick={handleLogin}
+                                    className="w-full gradient-neon text-white font-bold py-3 rounded hover-neon transition text-lg"
+                                >
+                                    ✅ Ingresar
+                                </button>
+                            </div>
+
+                            <div className="bg-gray-700 rounded-lg p-4 text-center text-sm text-gray-300 border border-gray-600">
+                                <p className="font-bold text-neon mb-2">🔓 Credenciales de Demo:</p>
+                                <p>📧 admin@chelonsky.com</p>
+                                <p>🔐 JETSO2024</p>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            // VISTA TIENDA INDIVIDUAL
+            if (selectedStore) {
+                const store = stores.find(s => s.id === selectedStore);
+                const totalSales = store.sales?.reduce((sum, s) => sum + s.amount, 0) || 0;
+
+                return (
+                    <div className="min-h-screen p-4 md:p-8">
+                        <div className="max-w-6xl mx-auto">
+                            {/* Header */}
+                            <div className="flex justify-between items-center mb-8">
+                                <div>
+                                    <h2 className="text-4xl font-bold neon-green">{store.name}</h2>
+                                    <p className="text-gray-400">Propietario: {store.owner}</p>
+                                </div>
+                                <button
+                                    onClick={() => setSelectedStore(null)}
+                                    className="bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded transition"
+                                >
+                                    ← Volver
+                                </button>
+                            </div>
+
+                            {/* KPIs */}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                                <div className="bg-gray-800 border border-neon rounded-lg p-6">
+                                    <p className="text-gray-400 text-sm">Total Ventas Hoy</p>
+                                    <p className="text-3xl font-bold neon-green">${totalSales.toLocaleString('es-MX')}</p>
+                                </div>
+                                <div className="bg-gray-800 border border-neon rounded-lg p-6">
+                                    <p className="text-gray-400 text-sm">Número de Ventas</p>
+                                    <p className="text-3xl font-bold neon-green">{store.sales?.length || 0}</p>
+                                </div>
+                                <div className="bg-gray-800 border border-neon rounded-lg p-6">
+                                    <p className="text-gray-400 text-sm">Clientes Registrados</p>
+                                    <p className="text-3xl font-bold neon-green">{store.clients?.length || 0}</p>
+                                </div>
+                            </div>
+
+                            {/* Registrar Venta */}
+                            <div className="bg-gray-800 border border-neon rounded-lg p-6 mb-8">
+                                <h3 className="text-2xl font-bold neon-green mb-4">➕ Nueva Venta</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                    <input
+                                        type="text"
+                                        placeholder="Nombre Cliente"
+                                        value={formData.clientName || ''}
+                                        onChange={(e) => setFormData({...formData, clientName: e.target.value})}
+                                        className="bg-gray-700 text-white px-4 py-2 rounded border border-gray-600 focus:border-neon"
+                                    />
+                                    <input
+                                        type="number"
+                                        placeholder="Monto"
+                                        value={formData.amount || ''}
+                                        onChange={(e) => setFormData({...formData, amount: e.target.value})}
+                                        className="bg-gray-700 text-white px-4 py-2 rounded border border-gray-600 focus:border-neon"
+                                    />
+                                    <select
+                                        value={formData.paymentMethod || 'Efectivo'}
+                                        onChange={(e) => setFormData({...formData, paymentMethod: e.target.value})}
+                                        className="bg-gray-700 text-white px-4 py-2 rounded border border-gray-600 focus:border-neon"
+                                    >
+                                        <option>Efectivo</option>
+                                        <option>Transferencia</option>
+                                        <option>Tarjeta</option>
+                                        <option>Crédito</option>
+                                    </select>
+                                    <button
+                                        onClick={() => handleAddSale(store.id)}
+                                        className="gradient-neon text-white font-bold rounded hover-neon transition"
+                                    >
+                                        Registrar
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Últimas Ventas */}
+                            <div className="bg-gray-800 border border-neon rounded-lg p-6 mb-8">
+                                <div className="flex justify-between items-center mb-4">
+                                    <h3 className="text-2xl font-bold neon-green">📊 Últimas Ventas</h3>
+                                    <button
+                                        onClick={() => exportToExcel(store)}
+                                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition text-sm"
+                                    >
+                                        📥 Descargar Excel
+                                    </button>
+                                </div>
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-sm">
+                                        <thead className="border-b border-neon">
+                                            <tr>
+                                                <th className="text-left py-2 text-neon">Cliente</th>
+                                                <th className="text-left py-2 text-neon">Monto</th>
+                                                <th className="text-left py-2 text-neon">Método</th>
+                                                <th className="text-left py-2 text-neon">Fecha</th>
+                                                <th className="text-left py-2 text-neon">Hora</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {(store.sales || []).slice(-10).reverse().map(sale => (
+                                                <tr key={sale.id} className="border-b border-gray-700 hover:bg-gray-700">
+                                                    <td className="py-2">{sale.client}</td>
+                                                    <td className="py-2 neon-green font-bold">${sale.amount.toLocaleString('es-MX')}</td>
+                                                    <td className="py-2 text-gray-400">{sale.method}</td>
+                                                    <td className="py-2 text-gray-400">{sale.date}</td>
+                                                    <td className="py-2 text-gray-400">{sale.time}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            // DASHBOARD ADMIN
+            const totalSales = stores.reduce((sum, store) => 
+                sum + (store.sales?.reduce((s, sale) => s + sale.amount, 0) || 0), 0
+            );
+
+            const storeData = stores.map(store => ({
+                name: store.name.substring(0, 15),
+                sales: store.sales?.reduce((s, sale) => s + sale.amount, 0) || 0,
+                clients: store.clients?.length || 0
+            }));
+
+            return (
+                <div className="min-h-screen p-4 md:p-8">
+                    <div className="max-w-7xl mx-auto">
+                        {/* Header */}
+                        <div className="flex justify-between items-start mb-8">
+                            <div>
+                                <h1 className="text-5xl font-black neon-green mb-2">CHELONSKY</h1>
+                                <p className="text-gray-400">Hola, {user.name} 👋</p>
+                            </div>
+                            <button
+                                onClick={handleLogout}
+                                className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded transition font-bold"
+                            >
+                                🚪 Cerrar Sesión
+                            </button>
+                        </div>
+
+                        {/* KPIs */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                            <div className="bg-gray-800 border-2 border-neon rounded-lg p-6">
+                                <p className="text-gray-400 text-sm mb-2">🏪 Tiendas Activas</p>
+                                <p className="text-4xl font-black neon-green">{stores.length}</p>
+                            </div>
+                            <div className="bg-gray-800 border-2 border-neon rounded-lg p-6">
+                                <p className="text-gray-400 text-sm mb-2">💰 Ingresos Totales</p>
+                                <p className="text-4xl font-black neon-green">${totalSales.toLocaleString('es-MX')}</p>
+                            </div>
+                            <div className="bg-gray-800 border-2 border-neon rounded-lg p-6">
+                                <p className="text-gray-400 text-sm mb-2">📅 Hoy</p>
+                                <p className="text-2xl font-bold text-gray-300">{new Date().toLocaleDateString('es-MX')}</p>
+                            </div>
+                        </div>
+
+                        {/* Crear Tienda */}
+                        <div className="bg-gray-800 border-2 border-neon rounded-lg p-6 mb-8">
+                            <h2 className="text-2xl font-bold neon-green mb-4">➕ Crear Nueva Tienda</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <input
+                                    type="text"
+                                    placeholder="Nombre Tienda"
+                                    value={formData.storeName || ''}
+                                    onChange={(e) => setFormData({...formData, storeName: e.target.value})}
+                                    className="bg-gray-700 text-white px-4 py-2 rounded border border-gray-600 focus:border-neon"
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="Usuario Propietario"
+                                    value={formData.userName || ''}
+                                    onChange={(e) => setFormData({...formData, userName: e.target.value})}
+                                    className="bg-gray-700 text-white px-4 py-2 rounded border border-gray-600 focus:border-neon"
+                                />
+                                <input
+                                    type="email"
+                                    placeholder="Email"
+                                    value={formData.email || ''}
+                                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                                    className="bg-gray-700 text-white px-4 py-2 rounded border border-gray-600 focus:border-neon"
+                                />
+                                <button
+                                    onClick={handleCreateStore}
+                                    className="gradient-neon text-white font-bold rounded hover-neon transition"
+                                >
+                                    Crear
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Lista de Tiendas */}
+                        <div className="bg-gray-800 border-2 border-neon rounded-lg p-6">
+                            <h2 className="text-2xl font-bold neon-green mb-6">🏪 Mis Tiendas ({stores.length})</h2>
+                            {stores.length === 0 ? (
+                                <p className="text-gray-400 text-center py-8">No hay tiendas creadas aún</p>
+                            ) : (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {stores.map(store => {
+                                        const storeSales = store.sales?.reduce((s, sale) => s + sale.amount, 0) || 0;
+                                        return (
+                                            <div key={store.id} className="bg-gray-700 border border-neon rounded-lg p-4 hover:bg-gray-600 transition cursor-pointer" onClick={() => setSelectedStore(store.id)}>
+                                                <div className="flex justify-between items-start mb-3">
+                                                    <div>
+                                                        <h3 className="text-xl font-bold neon-green">{store.name}</h3>
+                                                        <p className="text-gray-400 text-sm">📌 {store.owner}</p>
+                                                    </div>
+                                                    <span className="bg-neon text-black text-xs font-bold px-3 py-1 rounded">
+                                                        {store.licenseActive ? '✅ ACTIVA' : '❌ VENCIDA'}
+                                                    </span>
+                                                </div>
+                                                <p className="text-gray-400 text-xs mb-3">Código: <span className="neon-green font-mono">{store.licenseCode}</span></p>
+                                                <div className="grid grid-cols-3 gap-2 text-sm">
+                                                    <div className="bg-gray-800 rounded p-2">
+                                                        <p className="text-gray-400 text-xs">Ventas</p>
+                                                        <p className="font-bold neon-green">${storeSales.toLocaleString('es-MX')}</p>
+                                                    </div>
+                                                    <div className="bg-gray-800 rounded p-2">
+                                                        <p className="text-gray-400 text-xs">Transacciones</p>
+                                                        <p className="font-bold neon-green">{store.sales?.length || 0}</p>
+                                                    </div>
+                                                    <div className="bg-gray-800 rounded p-2">
+                                                        <p className="text-gray-400 text-xs">Clientes</p>
+                                                        <p className="font-bold neon-green">{store.clients?.length || 0}</p>
+                                                    </div>
+                                                </div>
+                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<ChelonskyApp />, document.getElementById('root'));
+    </script>
+</body>
+</html>
